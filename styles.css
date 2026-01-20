@@ -47,6 +47,14 @@ a{color:inherit}
     ),
     url("./assets/img/hero.jpg") center/cover no-repeat;
 }
+.hero__grid{
+  display:grid; gap:22px;
+  grid-template-columns: 1.35fr .85fr;
+  align-items:stretch;
+}
+@media (max-width: 900px){
+  .hero__grid{grid-template-columns: 1fr}
+}
 
 
 .pill{
