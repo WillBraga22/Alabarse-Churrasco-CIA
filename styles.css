@@ -141,6 +141,12 @@ h1{
   padding-top: 12px;
 }
 
+.logo{
+  height: 42px;
+  width: auto;
+  display: block;
+}
+
 .section{padding: 42px 0}
 .section--alt{
   background: rgba(255,255,255,.03);
