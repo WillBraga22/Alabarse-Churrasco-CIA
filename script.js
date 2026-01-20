@@ -13,8 +13,6 @@
   }
 
   function track(eventName, params = {}) {
-    // Aqui você pluga GTM/GA4 depois.
-    // Se GTM estiver ativo, dá pra trocar por: dataLayer.push({ event: eventName, ...params })
     try {
       window.dataLayer = window.dataLayer || [];
       window.dataLayer.push({ event: eventName, ...params });
@@ -26,8 +24,24 @@
     window.open(buildWhatsUrl(message), "_blank", "noopener,noreferrer");
   }
 
-  // Botões de WhatsApp
-  const whatsButtons = [
+  // ✅ NOVO: rolar até o formulário
+  function goToForm(source = "cta") {
+    track("cta_go_to_form", { source });
+
+    const formSection = document.getElementById("form");
+    if (!formSection) return;
+
+    formSection.scrollIntoView({ behavior: "smooth", block: "start" });
+
+    // foca no primeiro campo após a rolagem
+    setTimeout(() => {
+      const firstInput = document.querySelector('#leadForm input[name="nome"]');
+      if (firstInput) firstInput.focus();
+    }, 450);
+  }
+
+  // ✅ Agora: botões principais só descem para o formulário (não abrem WhatsApp)
+  const ctaToFormButtons = [
     ["btnWhatsTop", "topo"],
     ["btnWhatsHero", "hero"],
     ["btnWhatsMid", "meio"],
@@ -35,21 +49,17 @@
     ["btnWhatsFooter", "rodape"],
   ];
 
-  for (const [id, source] of whatsButtons) {
+  for (const [id, source] of ctaToFormButtons) {
     const btn = document.getElementById(id);
     if (!btn) continue;
 
     btn.addEventListener("click", function (e) {
       e.preventDefault();
-      const msg =
-        "Olá! Quero solicitar orçamento com o BUFFET ALABARSE - CHURRASCO&CIA. " +
-        "Evento: (casamento/aniversário/corporativo). " +
-        "Cidade: ( ). Data: ( ). Nº de pessoas: ( ).";
-      openWhatsApp(msg, source);
+      goToForm(source);
     });
   }
 
-  // Formulário -> abre WhatsApp com mensagem completa
+  // ✅ Formulário -> abre WhatsApp com mensagem completa
   const form = document.getElementById("leadForm");
   if (form) {
     form.addEventListener("submit", function (e) {
