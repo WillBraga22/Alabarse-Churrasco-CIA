@@ -63,7 +63,7 @@ a{color:inherit}
 }
 
 .logo{
-  height: 160px;                 /* 🔥 tamanho real da logo */
+  height: 200px;                 /* 🔥 tamanho real da logo */
   width: auto;
   display: block;
   object-fit: contain;
