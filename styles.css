@@ -30,12 +30,13 @@ a{color:inherit}
   top: 0;
   z-index: 50;
 
-  height: 160px;              /* 🔒 altura travada */
+  height: 180px;              /* 🔒 altura travada */
   background: rgba(15,15,16,.75);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--line);
 
-  padding: 0;                 /* 🔑 remove gordura */
+  padding: 0;
+  overflow: visible;
 }
 
 
@@ -61,13 +62,17 @@ a{color:inherit}
 }
 
 .logo{
-  height: 100%;               /* ocupa toda a altura do header */
-  max-height: 160px;          /* 🔒 nunca passa de 160px */
+  height: 160px;                 /* 🔥 tamanho real da logo */
   width: auto;
   display: block;
-  object-fit: contain;        /* garante proporção */
-  filter: drop-shadow(0 3px 8px rgba(0,0,0,.6));
+  object-fit: contain;
+
+  margin-top: -20px;             /* ⬆️ controla o quanto vaza */
+  margin-bottom: -20px;          /* ⬇️ equilibra visualmente */
+
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,.7));
 }
+
 
 
 @media (max-width: 600px){
