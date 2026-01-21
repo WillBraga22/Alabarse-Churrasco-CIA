@@ -38,7 +38,16 @@ a{color:inherit}
 .brand__name{font-weight:800; letter-spacing:.3px}
 .brand__sub{color:var(--muted); font-size:13px; margin-top:2px}
 
-.hero{padding:48px 0 22px}
+.hero{
+  padding: 56px 0 26px;
+  background:
+    linear-gradient(
+      rgba(0,0,0,.65),
+      rgba(0,0,0,.55)
+    ),
+    url("./assets/img/hero.jpg") center/cover no-repeat;
+}
+
 .hero__grid{
   display:grid; gap:22px;
   grid-template-columns: 1.35fr .85fr;
