@@ -29,12 +29,15 @@ a{color:inherit}
   position: sticky;
   top: 0;
   z-index: 50;
+
+  height: 160px;              /* 🔒 altura travada */
   background: rgba(15,15,16,.75);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--line);
 
-  padding: 2px 0;      /* ⬅️ diminui MUITO */
+  padding: 0;                 /* 🔑 remove gordura */
 }
+
 
 
 .topbar__inner{
@@ -58,11 +61,14 @@ a{color:inherit}
 }
 
 .logo{
-  height: 220px;
+  height: 100%;               /* ocupa toda a altura do header */
+  max-height: 160px;          /* 🔒 nunca passa de 160px */
   width: auto;
   display: block;
+  object-fit: contain;        /* garante proporção */
   filter: drop-shadow(0 3px 8px rgba(0,0,0,.6));
 }
+
 
 @media (max-width: 600px){
   .topbar{ padding: 8px 0; }
