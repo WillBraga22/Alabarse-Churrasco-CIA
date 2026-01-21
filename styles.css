@@ -78,15 +78,27 @@ a{color:inherit}
 
 @media (max-width: 600px){
   .topbar{
-    height: 90px;
+    height: auto;        /* deixa crescer naturalmente */
+    padding: 8px 0;      /* como estava antes */
+    overflow: hidden;    /* ❌ não deixa vazar */
   }
 
   .logo{
-    height: 110px;
-    margin-top: -10px;
-    margin-bottom: -10px;
+    height: 58px;        /* tamanho seguro no mobile */
+    margin: 0;           /* remove vazamento */
+  }
+
+  .topbar__actions{
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+  }
+
+  .region{
+    font-size: 12px;
   }
 }
+
 
 
   
