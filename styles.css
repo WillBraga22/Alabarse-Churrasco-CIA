@@ -324,7 +324,7 @@ input:focus, select:focus, textarea:focus{
 .carousel__track{
   display: flex;
   width: max-content;
-  animation: scroll-carousel 40s linear infinite;
+  animation: scroll-carousel 60s linear infinite;
 }
 
 .carousel__track img{
