@@ -323,21 +323,45 @@ input:focus, select:focus, textarea:focus{
 
 .carousel__track{
   display: flex;
-  transition: transform .6s ease;
+  width: max-content;
+  animation: scroll-carousel 40s linear infinite;
 }
 
 .carousel__track img{
-  width: 100%;
-  flex-shrink: 0;
-  height: 360px;
+  width: 25vw;              /* 4 imagens no desktop */
+  max-width: 320px;
+  min-width: 240px;
+  height: 220px;
   object-fit: cover;
+  flex-shrink: 0;
 }
 
-@media (max-width: 600px){
-  .carousel__track img{
-    height: 220px;
+/* animação contínua */
+@keyframes scroll-carousel{
+  from{
+    transform: translateX(0);
+  }
+  to{
+    transform: translateX(-50%);
   }
 }
+
+/* tablet */
+@media (max-width: 900px){
+  .carousel__track img{
+    width: 40vw;            /* 2–3 imagens */
+    height: 200px;
+  }
+}
+
+/* mobile */
+@media (max-width: 600px){
+  .carousel__track img{
+    width: 70vw;            /* 1–2 imagens */
+    height: 180px;
+  }
+}
+
 
 
 
