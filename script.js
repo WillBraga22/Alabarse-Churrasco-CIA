@@ -121,3 +121,39 @@
     });
   }
 })();
+
+(function(){
+  const carousel = document.getElementById("carousel");
+  if (!carousel) return;
+
+  const track = carousel.querySelector(".carousel__track");
+  const slides = track.children;
+  let index = 0;
+  let startX = 0;
+  let isDragging = false;
+
+  function goToSlide(i){
+    index = (i + slides.length) % slides.length;
+    track.style.transform = `translateX(-${index * 100}%)`;
+  }
+
+  // autoplay
+  setInterval(() => {
+    goToSlide(index + 1);
+  }, 4000); // 4 segundos
+
+  // swipe mobile
+  carousel.addEventListener("touchstart", e => {
+    startX = e.touches[0].clientX;
+    isDragging = true;
+  });
+
+  carousel.addEventListener("touchend", e => {
+    if (!isDragging) return;
+    const diff = e.changedTouches[0].clientX - startX;
+    if (diff > 50) goToSlide(index - 1);
+    if (diff < -50) goToSlide(index + 1);
+    isDragging = false;
+  });
+})();
+
