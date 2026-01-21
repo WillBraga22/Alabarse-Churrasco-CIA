@@ -82,10 +82,17 @@ h1{
 }
 
 .logo{
-  height: 48px;
+  height: 64px;          /* ⬅️ aumente aqui */
   width: auto;
   display: block;
+  filter: drop-shadow(0 3px 8px rgba(0,0,0,.6));
 }
+@media (max-width: 600px){
+  .logo{
+    height: 48px;
+  }
+}
+
 
 .btn{
   display:inline-flex;
