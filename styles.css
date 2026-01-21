@@ -93,6 +93,17 @@ h1{
   }
 }
 
+.topbar__actions{
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.region{
+  font-size: 13px;
+  color: var(--muted);
+  white-space: nowrap;
+}
 
 
 
