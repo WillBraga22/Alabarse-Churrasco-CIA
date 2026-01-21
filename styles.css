@@ -92,6 +92,12 @@ a{color:inherit}
   .hero__grid{grid-template-columns: 1fr}
 }
 
+
+.topbar { padding: 18px 0 !important; }
+.logo { height: 110px !important; }
+
+
+
 .pill{
   display:inline-block;
   padding:8px 12px;
