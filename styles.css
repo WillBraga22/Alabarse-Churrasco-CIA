@@ -363,6 +363,19 @@ input:focus, select:focus, textarea:focus{
   }
 }
 
+.section--full{
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.carousel--full{
+  width: 100vw;                 /* 🔥 tela inteira */
+  margin-left: 50%;
+  transform: translateX(-50%);  /* centraliza no viewport */
+  border-radius: 0;             /* full-bleed real */
+  border-left: none;
+  border-right: none;
+}
 
 
 
