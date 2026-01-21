@@ -42,11 +42,12 @@ a{color:inherit}
 
 
 .topbar__inner{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
 }
+
 
 
 .topbar__actions{
@@ -76,18 +77,17 @@ a{color:inherit}
 
 
 @media (max-width: 600px){
-  .topbar{ padding: 8px 0; }
-
-  .logo{ height: 88px; }
-
-  .topbar__actions{
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 6px;
+  .topbar{
+    height: 90px;
   }
 
-  .region{ font-size: 12px; }
+  .logo{
+    height: 110px;
+    margin-top: -10px;
+    margin-bottom: -10px;
+  }
 }
+
 
   
 
