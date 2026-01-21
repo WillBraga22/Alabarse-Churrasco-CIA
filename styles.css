@@ -32,9 +32,43 @@ a{color:inherit}
   border-bottom: 1px solid var(--line);
 }
 .topbar__inner{
-  display:flex; align-items:center; justify-content:space-between;
-  padding:14px 0;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 14px;
 }
+
+.topbar__actions{
+  display:flex;
+  align-items:center;
+  gap: 14px;
+}
+
+.region{
+  font-size: 13px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.logo{
+  height: 72px;
+  width: auto;
+  display: block;
+  filter: drop-shadow(0 3px 8px rgba(0,0,0,.6));
+}
+
+@media (max-width: 600px){
+  .logo{ height: 52px; }
+
+  .topbar__actions{
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+  }
+
+  .region{ font-size: 12px; }
+}
+
 .brand__name{font-weight:800; letter-spacing:.3px}
 .brand__sub{color:var(--muted); font-size:13px; margin-top:2px}
 
