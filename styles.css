@@ -81,12 +81,18 @@ h1{
   margin: 18px 0 10px;
 }
 
-.topbar{
-  padding: 10px 0;
-}
 .logo{
-  height: 72px;
+  height: 64px;          /* ⬅️ aumente aqui */
+  width: auto;
+  display: block;
+  filter: drop-shadow(0 3px 8px rgba(0,0,0,.6));
 }
+@media (max-width: 600px){
+  .logo{
+    height: 48px;
+  }
+}
+
 
 
 
