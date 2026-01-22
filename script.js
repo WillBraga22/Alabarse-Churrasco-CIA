@@ -6,12 +6,12 @@
   if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 
   function encode(text) {
-    return encodeURIComponent(text).replace(/%20/g, "+");
-  }
+  return encodeURIComponent(text);
+}
 
-  function buildWhatsUrl(message) {
-    return `https://wa.me/${PHONE_E164}?text=${encode(message)}`;
-  }
+ function buildWhatsUrl(message) {
+  return `https://api.whatsapp.com/send?phone=${PHONE_E164}&text=${encode(message)}`;
+}
 
   function track(eventName, params = {}) {
     try {
