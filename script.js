@@ -1,6 +1,7 @@
 (function () {
   const PHONE_E164 = "5514996139532"; // +55 14 99613-9532 (sem +)
   const DEFAULT_SOURCE = "site";
+
   const yearEl = document.getElementById("year");
   if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 
@@ -24,7 +25,16 @@
     window.open(buildWhatsUrl(message), "_blank", "noopener,noreferrer");
   }
 
-  // ✅ NOVO: rolar até o formulário
+  // ✅ WhatsApp direto (sem rolar)
+  function openWhatsDirect(source, message = "") {
+    track("lead_whatsapp_click", { source });
+    const url = message
+      ? buildWhatsUrl(message)
+      : `https://wa.me/${PHONE_E164}`;
+    window.open(url, "_blank", "noopener,noreferrer");
+  }
+
+  // ✅ rolar até o formulário (para CTAs do meio)
   function goToForm(source = "cta") {
     track("cta_go_to_form", { source });
 
@@ -33,20 +43,23 @@
 
     formSection.scrollIntoView({ behavior: "smooth", block: "start" });
 
-    // foca no primeiro campo após a rolagem
     setTimeout(() => {
       const firstInput = document.querySelector('#leadForm input[name="nome"]');
       if (firstInput) firstInput.focus();
     }, 450);
   }
 
-  // ✅ Agora: botões principais só descem para o formulário (não abrem WhatsApp)
+const WHATS_MESSAGES = {
+  topo: "Olá! Vim pelo site do Buffet Alabarse e gostaria de um orçamento 😊",
+  rodape: "Olá! Estou no site do Buffet Alabarse e queria saber mais sobre valores e disponibilidade.",
+};
+
+  
+  // ✅ CTAs que rolam pro formulário (não abrem WhatsApp)
   const ctaToFormButtons = [
-    ["btnWhatsTop", "topo"],
     ["btnWhatsHero", "hero"],
     ["btnWhatsMid", "meio"],
     ["btnWhatsBottom", "faq"],
-    ["btnWhatsFooter", "rodape"],
   ];
 
   for (const [id, source] of ctaToFormButtons) {
@@ -56,6 +69,23 @@
     btn.addEventListener("click", function (e) {
       e.preventDefault();
       goToForm(source);
+    });
+  }
+
+  // ✅ Header e Rodapé = Whats direto
+  const btnTop = document.getElementById("btnWhatsTop");
+  if (btnTop) {
+    btnTop.addEventListener("click", function (e) {
+      e.preventDefault();
+      openWhatsDirect("topo_direto", WHATS_MESSAGES.topo);
+    });
+  }
+
+  const btnFooter = document.getElementById("btnWhatsFooter");
+  if (btnFooter) {
+    btnFooter.addEventListener("click", function (e) {
+      e.preventDefault();
+      openWhatsDirect("rodape_direto", WHATS_MESSAGES.rodape);
     });
   }
 
@@ -95,6 +125,7 @@
   // Modal de privacidade
   const privacyLink = document.getElementById("privacyLink");
   const modal = document.getElementById("privacyModal");
+
   function closeModal() {
     if (!modal) return;
     modal.setAttribute("aria-hidden", "true");
@@ -103,6 +134,7 @@
     if (!modal) return;
     modal.setAttribute("aria-hidden", "false");
   }
+
   if (privacyLink && modal) {
     privacyLink.addEventListener("click", function (e) {
       e.preventDefault();
@@ -122,38 +154,5 @@
   }
 })();
 
-(function(){
-  const carousel = document.getElementById("carousel");
-  if (!carousel) return;
 
-  const track = carousel.querySelector(".carousel__track");
-  const slides = track.children;
-  let index = 0;
-  let startX = 0;
-  let isDragging = false;
-
-  function goToSlide(i){
-    index = (i + slides.length) % slides.length;
-    track.style.transform = `translateX(-${index * 100}%)`;
-  }
-
-  // autoplay
-  setInterval(() => {
-    goToSlide(index + 1);
-  }, 4000); // 4 segundos
-
-  // swipe mobile
-  carousel.addEventListener("touchstart", e => {
-    startX = e.touches[0].clientX;
-    isDragging = true;
-  });
-
-  carousel.addEventListener("touchend", e => {
-    if (!isDragging) return;
-    const diff = e.changedTouches[0].clientX - startX;
-    if (diff > 50) goToSlide(index - 1);
-    if (diff < -50) goToSlide(index + 1);
-    isDragging = false;
-  });
-})();
 
