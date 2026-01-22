@@ -433,4 +433,43 @@ input:focus, select:focus, textarea:focus{
   cursor: pointer;
 }
 
+.footer__social{
+  display: flex;
+  gap: 14px;
+}
+
+.social-link{
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.12);
+  color: var(--text);
+
+  transition: background .2s ease, transform .15s ease, color .2s ease;
+}
+
+.social-link svg{
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
+.social-link:hover{
+  background: rgba(37,211,102,.15); /* verde suave */
+  color: var(--primary);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 600px){
+  .footer__social{
+    justify-content: center;
+    margin-top: 12px;
+  }
+}
+
 
