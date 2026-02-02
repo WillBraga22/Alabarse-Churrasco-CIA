@@ -18,10 +18,6 @@
 
   <link rel="stylesheet" href="./styles.css" />
 
-  <!--
-    (Opcional) Google Tag Manager / GA4:
-    Cole aqui os scripts quando você já tiver o ID do cliente.
-  -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -34,16 +30,14 @@
   }
   </script>
 
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=AW-17899946680"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'AW-17899946680');
-</script>
-  
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17899946680"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'AW-17899946680');
+  </script>
 </head>
 
 <body>
@@ -59,11 +53,11 @@
       <div class="topbar__actions">
         <div class="region">Jaú • Atendemos toda a região!</div>
 
+        <!-- ✅ Agora abre o seletor (Rita / Cláudio) via JS -->
         <a
           id="btnWhatsTop"
           class="btn btn--ghost"
-          href="https://wa.me/5514996139532"
-          target="_blank"
+          href="#"
           rel="noopener"
         >
           WhatsApp
@@ -89,9 +83,12 @@
           </p>
 
           <div class="cta-row">
+            <!-- ✅ Agora abre direto o WhatsApp (via seletor) -->
             <a class="btn btn--primary" id="btnWhatsHero" href="#">
               Solicitar orçamento no WhatsApp
             </a>
+
+            <!-- ✅ Continua rolando pro formulário -->
             <a class="btn btn--secondary" href="#form">
               Quero orçamento por formulário
             </a>
@@ -328,8 +325,7 @@
         <a
           id="btnWhatsFooter"
           class="btn btn--primary"
-          href="https://wa.me/5514996139532"
-          target="_blank"
+          href="#"
           rel="noopener"
         >
           WhatsApp: (14) 99613-9532
@@ -340,9 +336,43 @@
         © <span id="year"></span> Buffet Alabarse. Todos os direitos reservados.
         <span class="sep">•</span>
         <a href="#" id="privacyLink">Política de Privacidade</a>
+        <span class="sep">•</span>
+        Feito por
+        <a href="https://instagram.com/willian.trafego" target="_blank" rel="noopener">
+          Willian Braga
+        </a>
       </div>
     </div>
   </footer>
+
+  <!-- ✅ Modal para escolher WhatsApp (Rita / Cláudio) -->
+  <div class="modal" id="whatsModal" aria-hidden="true">
+    <div class="modal__backdrop" data-close="1"></div>
+    <div class="modal__card" role="dialog" aria-modal="true" aria-label="Escolher WhatsApp">
+      <div class="modal__header">
+        <strong>Escolha com quem falar</strong>
+        <button class="x" type="button" data-close="1" aria-label="Fechar">×</button>
+      </div>
+
+      <div class="modal__body">
+        <p style="margin-top:0">Selecione um atendimento para abrir o WhatsApp:</p>
+
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <a class="btn btn--primary" id="whatsRita" href="#" target="_blank" rel="noopener">
+            Rita • (14) 99613-9532
+          </a>
+
+          <a class="btn btn--secondary" id="whatsClaudio" href="#" target="_blank" rel="noopener">
+            Cláudio • (14) 99138-0914
+          </a>
+        </div>
+
+        <p class="fineprint" style="margin-top:12px">
+          Dica: se você preencheu o formulário, a mensagem já vai pronta 😊
+        </p>
+      </div>
+    </div>
+  </div>
 
   <div class="modal" id="privacyModal" aria-hidden="true">
     <div class="modal__backdrop" data-close="1"></div>
