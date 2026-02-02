@@ -1,17 +1,24 @@
 (function () {
-  const PHONE_E164 = "5514996139532"; // +55 14 99613-9532 (sem +)
   const DEFAULT_SOURCE = "site";
+
+  // ✅ Contatos (E.164 sem +)
+  const CONTACTS = {
+    rita: { name: "Rita", phone: "5514996139532" },
+    claudio: { name: "Cláudio", phone: "5514991380914" },
+  };
 
   const yearEl = document.getElementById("year");
   if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 
   function encode(text) {
-  return encodeURIComponent(text);
-}
+    return encodeURIComponent(text);
+  }
 
- function buildWhatsUrl(message) {
-  return `https://api.whatsapp.com/send?phone=${PHONE_E164}&text=${encode(message)}`;
-}
+  // ✅ Mantive seu padrão api.whatsapp.com (funciona bem em desktop e mobile)
+  function buildWhatsUrl(phoneE164, message = "") {
+    const base = `https://api.whatsapp.com/send?phone=${phoneE164}`;
+    return message ? `${base}&text=${encode(message)}` : base;
+  }
 
   function track(eventName, params = {}) {
     try {
@@ -20,76 +27,96 @@
     } catch (_) {}
   }
 
-  function openWhatsApp(message, source = DEFAULT_SOURCE) {
-    track("lead_whatsapp_click", { source });
-    window.open(buildWhatsUrl(message), "_blank", "noopener,noreferrer");
+  // ========= Modal Whats (Rita / Cláudio) =========
+  const whatsModal = document.getElementById("whatsModal");
+  const whatsRita = document.getElementById("whatsRita");
+  const whatsClaudio = document.getElementById("whatsClaudio");
+
+  let pendingMessage = "";
+  let pendingSource = DEFAULT_SOURCE;
+
+  function openWhatsChooser(source, message = "") {
+    pendingSource = source || DEFAULT_SOURCE;
+    pendingMessage = message || "";
+
+    // Prepara os links do modal
+    if (whatsRita) whatsRita.href = buildWhatsUrl(CONTACTS.rita.phone, pendingMessage);
+    if (whatsClaudio) whatsClaudio.href = buildWhatsUrl(CONTACTS.claudio.phone, pendingMessage);
+
+    // Abre modal
+    if (whatsModal) {
+      whatsModal.setAttribute("aria-hidden", "false");
+      track("whats_modal_open", { source: pendingSource });
+    } else {
+      // fallback: se o modal não existir, abre direto na Rita
+      window.open(buildWhatsUrl(CONTACTS.rita.phone, pendingMessage), "_blank", "noopener,noreferrer");
+    }
   }
 
-  // ✅ WhatsApp direto (sem rolar)
-  function openWhatsDirect(source, message = "") {
-    track("lead_whatsapp_click", { source });
-    const url = message
-      ? buildWhatsUrl(message)
-      : `https://wa.me/${PHONE_E164}`;
-    window.open(url, "_blank", "noopener,noreferrer");
+  function closeWhatsChooser() {
+    if (!whatsModal) return;
+    whatsModal.setAttribute("aria-hidden", "true");
   }
 
-  // ✅ rolar até o formulário (para CTAs do meio)
-  function goToForm(source = "cta") {
-    track("cta_go_to_form", { source });
+  // Fecha modal ao clicar fora ou no X
+  if (whatsModal) {
+    whatsModal.addEventListener("click", function (e) {
+      const t = e.target;
+      if (t && t.getAttribute && t.getAttribute("data-close") === "1") {
+        closeWhatsChooser();
+      }
+    });
 
-    const formSection = document.getElementById("form");
-    if (!formSection) return;
-
-    formSection.scrollIntoView({ behavior: "smooth", block: "start" });
-
-    setTimeout(() => {
-      const firstInput = document.querySelector('#leadForm input[name="nome"]');
-      if (firstInput) firstInput.focus();
-    }, 450);
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") closeWhatsChooser();
+    });
   }
 
-const WHATS_MESSAGES = {
-  topo: "Olá! Vim pelo site do Buffet Alabarse e gostaria de um orçamento 😊",
-  rodape: "Olá! Estou no site do Buffet Alabarse e queria saber mais sobre valores e disponibilidade.",
-};
+  // Track ao escolher um contato (e fecha o modal)
+  function bindContactTrack(el, contactKey) {
+    if (!el) return;
+    el.addEventListener("click", function () {
+      track("lead_whatsapp_click", {
+        source: pendingSource,
+        contact: contactKey,
+        stage: "open_whatsapp"
+      });
+      closeWhatsChooser();
+    });
+  }
 
-  
-  // ✅ CTAs que rolam pro formulário (não abrem WhatsApp)
-  const ctaToFormButtons = [
-    ["btnWhatsHero", "hero"],
-    ["btnWhatsMid", "meio"],
-    ["btnWhatsBottom", "faq"],
-  ];
+  bindContactTrack(whatsRita, "rita");
+  bindContactTrack(whatsClaudio, "claudio");
 
-  for (const [id, source] of ctaToFormButtons) {
+  // ========= Mensagens por botão =========
+  const WHATS_MESSAGES = {
+    topo: "Olá! Vim pelo site do Buffet Alabarse e gostaria de um orçamento 😊",
+    hero: "Olá! Quero solicitar orçamento para um evento. Pode me ajudar? 😊",
+    meio: "Olá! Gostaria de saber valores e disponibilidade para meu evento.",
+    faq: "Olá! Quero orçamento e opções de cardápio. Pode me passar?",
+    rodape: "Olá! Estou no site do Buffet Alabarse e queria saber mais sobre valores e disponibilidade.",
+  };
+
+  // ========= Liga os botões de WhatsApp =========
+  function bindWhatsButton(id, sourceKey) {
     const btn = document.getElementById(id);
-    if (!btn) continue;
+    if (!btn) return;
 
     btn.addEventListener("click", function (e) {
       e.preventDefault();
-      goToForm(source);
+      track("lead_whatsapp_click", { source: sourceKey, stage: "open_chooser" });
+      openWhatsChooser(sourceKey, WHATS_MESSAGES[sourceKey] || "");
     });
   }
 
-  // ✅ Header e Rodapé = Whats direto
-  const btnTop = document.getElementById("btnWhatsTop");
-  if (btnTop) {
-    btnTop.addEventListener("click", function (e) {
-      e.preventDefault();
-      openWhatsDirect("topo_direto", WHATS_MESSAGES.topo);
-    });
-  }
+  // ✅ Agora TODOS abrem o modal (Rita / Cláudio)
+  bindWhatsButton("btnWhatsTop", "topo");
+  bindWhatsButton("btnWhatsHero", "hero");
+  bindWhatsButton("btnWhatsMid", "meio");
+  bindWhatsButton("btnWhatsBottom", "faq");
+  bindWhatsButton("btnWhatsFooter", "rodape");
 
-  const btnFooter = document.getElementById("btnWhatsFooter");
-  if (btnFooter) {
-    btnFooter.addEventListener("click", function (e) {
-      e.preventDefault();
-      openWhatsDirect("rodape_direto", WHATS_MESSAGES.rodape);
-    });
-  }
-
-  // ✅ Formulário -> abre WhatsApp com mensagem completa
+  // ========= Formulário -> abre modal com mensagem completa =========
   const form = document.getElementById("leadForm");
   if (form) {
     form.addEventListener("submit", function (e) {
@@ -107,7 +134,7 @@ const WHATS_MESSAGES = {
       track("lead_form_submit", { source: "form" });
 
       const lines = [
-        "Olá! Quero solicitar orçamento com o BUFFET ALABARSE - CHURRASCO&CIA.",
+        "Olá! Quero solicitar orçamento com o BUFFET ALABARSE.",
         "",
         `Nome: ${nome || "-"}`,
         `Telefone: ${telefone || "-"}`,
@@ -118,11 +145,12 @@ const WHATS_MESSAGES = {
         mensagem ? `Mensagem: ${mensagem}` : ""
       ].filter(Boolean);
 
-      openWhatsApp(lines.join("\n"), "form");
+      // ✅ Abre modal para escolher Rita ou Cláudio com mensagem pronta
+      openWhatsChooser("form", lines.join("\n"));
     });
   }
 
-  // Modal de privacidade
+  // ========= Modal de privacidade (igual ao seu) =========
   const privacyLink = document.getElementById("privacyLink");
   const modal = document.getElementById("privacyModal");
 
@@ -153,6 +181,3 @@ const WHATS_MESSAGES = {
     });
   }
 })();
-
-
-
