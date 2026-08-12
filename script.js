@@ -10,10 +10,10 @@
     ADS_CONVERSION_SEND_TO: "",
   };
 
-  const CONTACTS = [
-    { key: "rita", name: "Rita", phone: "5514996139532" },
-    { key: "claudio", name: "Cláudio", phone: "5514991380914" },
-  ];
+  const CONTACTS = {
+    rita: { key: "rita", name: "Rita", phone: "5514996139532" },
+    claudio: { key: "claudio", name: "Cláudio", phone: "5514991380914" },
+  };
 
   const MESSAGES = {
     topo: "Olá! Vim pelo site do Buffet Alabarse e gostaria de consultar uma data para meu evento. Pode me ajudar? 😊",
@@ -32,26 +32,8 @@
   const yearEl = document.getElementById("year");
   if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 
-  function getAssignedContact() {
-    const storageKey = "alabarse_assigned_contact";
-    try {
-      const saved = localStorage.getItem(storageKey);
-      const found = CONTACTS.find((c) => c.key === saved);
-      if (found) return found;
-
-      // Distribui novos visitantes entre os dois atendimentos e mantém o mesmo contato nas próximas visitas.
-      const chosen = CONTACTS[Math.floor(Math.random() * CONTACTS.length)];
-      localStorage.setItem(storageKey, chosen.key);
-      return chosen;
-    } catch (_) {
-      return CONTACTS[0];
-    }
-  }
-
-  const assignedContact = getAssignedContact();
-
-  function buildWhatsUrl(message) {
-    return `https://api.whatsapp.com/send?phone=${assignedContact.phone}&text=${encodeURIComponent(message || "")}`;
+  function buildWhatsUrl(phone, message) {
+    return `https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(message || "")}`;
   }
 
   function track(eventName, params) {
@@ -79,21 +61,69 @@
     } catch (_) {}
   }
 
-  function openWhatsApp(source, message) {
+  // Seletor de atendimento: todos os CTAs deixam a pessoa escolher Rita ou Cláudio.
+  const whatsModal = document.getElementById("whatsModal");
+  const whatsRita = document.getElementById("whatsRita");
+  const whatsClaudio = document.getElementById("whatsClaudio");
+  let pendingSource = "site";
+  let pendingMessage = "";
+
+  function openWhatsChooser(source, message) {
+    pendingSource = source || "site";
+    pendingMessage = message || "";
+
+    if (whatsRita) whatsRita.href = buildWhatsUrl(CONTACTS.rita.phone, pendingMessage);
+    if (whatsClaudio) whatsClaudio.href = buildWhatsUrl(CONTACTS.claudio.phone, pendingMessage);
+
     track("lead_whatsapp_click", {
-      source,
-      contact: assignedContact.key,
-      stage: "open_whatsapp",
+      source: pendingSource,
+      stage: "open_chooser",
     });
-    trackAdsConversion();
-    window.open(buildWhatsUrl(message), "_blank", "noopener,noreferrer");
+
+    if (whatsModal) {
+      whatsModal.setAttribute("aria-hidden", "false");
+      document.body.classList.add("modal-open");
+    } else {
+      window.open(buildWhatsUrl(CONTACTS.rita.phone, pendingMessage), "_blank", "noopener,noreferrer");
+    }
+  }
+
+  function closeWhatsChooser() {
+    if (!whatsModal) return;
+    whatsModal.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("modal-open");
+  }
+
+  function bindContactChoice(element, contact) {
+    if (!element) return;
+    element.addEventListener("click", function () {
+      track("lead_whatsapp_click", {
+        source: pendingSource,
+        contact: contact.key,
+        stage: "open_whatsapp",
+      });
+      trackAdsConversion();
+      closeWhatsChooser();
+    });
+  }
+
+  bindContactChoice(whatsRita, CONTACTS.rita);
+  bindContactChoice(whatsClaudio, CONTACTS.claudio);
+
+  if (whatsModal) {
+    whatsModal.addEventListener("click", function (event) {
+      const target = event.target;
+      if (target && target.getAttribute && target.getAttribute("data-whats-close") === "1") {
+        closeWhatsChooser();
+      }
+    });
   }
 
   document.querySelectorAll("[data-whatsapp]").forEach((button) => {
     button.addEventListener("click", function (event) {
       event.preventDefault();
       const source = button.getAttribute("data-whatsapp") || "site";
-      openWhatsApp(source, MESSAGES[source] || MESSAGES.hero);
+      openWhatsChooser(source, MESSAGES[source] || MESSAGES.hero);
     });
   });
 
@@ -150,11 +180,9 @@
         data: String(fd.get("data") || "").trim(),
         pessoas: String(fd.get("pessoas") || "").trim(),
         cidade: String(fd.get("cidade") || "").trim(),
-        contact_assigned: assignedContact.name,
         source: "form_orcamento_express",
       };
 
-      // Mantém os dados no navegador caso a pessoa volte para a página.
       try {
         localStorage.setItem("alabarse_last_quote", JSON.stringify(payload));
       } catch (_) {}
@@ -164,10 +192,8 @@
         event_type: payload.evento,
         guests: payload.pessoas,
         city: payload.cidade,
-        contact: assignedContact.key,
       });
 
-      // Se o endpoint estiver configurado, tenta registrar o lead antes de abrir o WhatsApp.
       saveLead(payload);
 
       const message = [
@@ -181,7 +207,7 @@
         "Pode me passar as opções e verificar a disponibilidade?",
       ].join("\n");
 
-      openWhatsApp("form_orcamento_express", message);
+      openWhatsChooser("form_orcamento_express", message);
     });
 
     form.querySelectorAll("input,select").forEach((field) => {
@@ -217,6 +243,7 @@
   function setPrivacy(open) {
     if (!privacyModal) return;
     privacyModal.setAttribute("aria-hidden", open ? "false" : "true");
+    document.body.classList.toggle("modal-open", open);
   }
 
   if (privacyLink && privacyModal) {
@@ -224,10 +251,13 @@
     privacyModal.addEventListener("click", (event) => {
       if (event.target && event.target.getAttribute("data-close") === "1") setPrivacy(false);
     });
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape") setPrivacy(false);
-    });
   }
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") return;
+    closeWhatsChooser();
+    setPrivacy(false);
+  });
 
   // Exposição de seções para diagnóstico de funil no dataLayer/gtag.
   const observedSections = document.querySelectorAll("#experiencia,#como-funciona,#avaliacoes,#orcamento,#faq");

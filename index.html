@@ -252,14 +252,20 @@
     <section class="section about" id="sobre">
       <div class="container about__grid">
         <div class="about__media">
-          <img src="./assets/img/equipe.webp" width="624" height="860" alt="Equipe do Buffet Alabarse" loading="lazy" decoding="async" />
-          <div class="about__badge"><strong>Atendimento próximo</strong><span>do primeiro contato ao evento</span></div>
+          <div class="about__photos">
+            <img class="about__photo about__photo--main" src="./assets/img/equipe.webp" width="624" height="860" alt="Equipe do Buffet Alabarse" loading="lazy" decoding="async" />
+            <div class="about__photos-small">
+              <img class="about__photo" src="./assets/img/familia-alabarse.webp" width="720" height="1280" alt="Equipe do Buffet Alabarse trabalhando em família" loading="lazy" decoding="async" />
+              <img class="about__photo" src="./assets/img/familia-alabarse-2.webp" width="810" height="1080" alt="Equipe do Buffet Alabarse durante o trabalho" loading="lazy" decoding="async" />
+            </div>
+          </div>
+          <div class="about__badge"><strong>Trabalho em família</strong><span>do primeiro contato ao evento</span></div>
         </div>
         <div class="about__content">
           <span class="kicker">Quem está por trás do seu evento</span>
           <h2>Atendimento humano faz diferença quando cada detalhe importa.</h2>
           <p>O Buffet Alabarse atende Jaú e região com uma proposta simples: entender o que você está planejando, montar as opções de buffet e acompanhar os detalhes até o dia do evento.</p>
-          <p>Rita e Cláudio fazem parte do atendimento e ajudam a transformar as informações do seu evento em uma proposta clara, sem etapas desnecessárias no primeiro contato.</p>
+          <p>Rita e Cláudio fazem parte do atendimento e ajudam a transformar as informações do seu evento em uma proposta clara, com um atendimento próximo e direto pelo WhatsApp.</p>
           <div class="about__contacts">
             <span>Rita • (14) 99613-9532</span>
             <span>Cláudio • (14) 99138-0914</span>
@@ -427,6 +433,28 @@
       <span class="wa-dot" aria-hidden="true"></span>
       Consultar minha data
     </a>
+  </div>
+
+  <div class="modal" id="whatsModal" aria-hidden="true">
+    <div class="modal__backdrop" data-whats-close="1"></div>
+    <div class="modal__card modal__card--whats" role="dialog" aria-modal="true" aria-labelledby="whatsTitle">
+      <div class="modal__header">
+        <strong id="whatsTitle">Com quem você prefere falar?</strong>
+        <button class="x" type="button" data-whats-close="1" aria-label="Fechar">×</button>
+      </div>
+      <div class="modal__body">
+        <p class="whats-choice__intro">Escolha um atendimento para continuar no WhatsApp:</p>
+        <div class="whats-choice">
+          <a class="btn btn--whatsapp btn--block" id="whatsRita" href="#" target="_blank" rel="noopener">
+            Rita • (14) 99613-9532
+          </a>
+          <a class="btn btn--secondary btn--block" id="whatsClaudio" href="#" target="_blank" rel="noopener">
+            Cláudio • (14) 99138-0914
+          </a>
+        </div>
+        <p class="whats-choice__note">Se você preencheu o orçamento express, sua mensagem já estará pronta.</p>
+      </div>
+    </div>
   </div>
 
   <div class="modal" id="privacyModal" aria-hidden="true">
